@@ -24,4 +24,19 @@ public class Venue extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "venue", cascade = CascadeType.ALL)
     private List<VenueSeat> venueSeats;
+
+    @Builder
+    public Venue(Long id, String name, Integer capacity, List<VenueSeat> venueSeats) {
+        this.id = id;
+        this.name = name;
+        this.capacity = capacity;
+        this.venueSeats = venueSeats;
+    }
+
+    public void update(Long id, String name, Integer capacity, List<VenueSeat> venueSeats) {
+        this.id = id;
+        this.name = name;
+        this.capacity = capacity;
+        this.venueSeats = venueSeats;
+    }
 }
