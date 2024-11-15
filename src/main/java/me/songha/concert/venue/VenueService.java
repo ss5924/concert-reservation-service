@@ -45,7 +45,6 @@ public class VenueService {
         List<VenueSeat> venueSeats = venueSeatRepository.findByVenueId(venueDto.getId());
 
         venue.update(
-                venueDto.getId(),
                 venueDto.getName(),
                 venueDto.getCapacity(),
                 venueSeats

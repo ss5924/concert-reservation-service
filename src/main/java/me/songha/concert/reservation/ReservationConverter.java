@@ -14,6 +14,7 @@ public class ReservationConverter {
                 .userId(reservationDto.getUserId())
                 .concert(concert)
                 .totalAmount(reservationDto.getTotalAmount())
+                .status(ReservationStatus.fromString(reservationDto.getReservationStatus()))
                 .reservationSeats(reservationSeats)
                 .build();
     }
@@ -24,6 +25,7 @@ public class ReservationConverter {
                 .userId(reservation.getUserId())
                 .concertId(reservation.getConcert().getId())
                 .concertTitle(reservation.getConcert().getTitle())
+                .reservationStatus(reservation.getStatus().toString())
                 .seatNumbers(reservation.getReservationSeats()
                         .stream().map(reservationSeat -> reservationSeat.getVenueSeat().getSeatNumber()).toList())
                 .build();

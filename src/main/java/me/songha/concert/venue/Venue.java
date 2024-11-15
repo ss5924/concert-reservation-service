@@ -33,8 +33,7 @@ public class Venue extends BaseTimeEntity {
         this.venueSeats = venueSeats;
     }
 
-    public void update(Long id, String name, Integer capacity, List<VenueSeat> venueSeats) {
-        this.id = id;
+    public void update(String name, Integer capacity, List<VenueSeat> venueSeats) {
         this.name = name;
         this.capacity = capacity;
         this.venueSeats = venueSeats;

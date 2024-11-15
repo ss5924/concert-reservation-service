@@ -54,18 +54,14 @@ public class ReservationService {
     }
 
     public void updateReservation(Long id, ReservationDto reservationDto) {
-        Concert concert = concertRepository.findById(reservationDto.getConcertId())
-                .orElseThrow(() -> new ConcertNotFoundException("[Error] Concert not found."));
-
         List<ReservationSeat> reservationSeats = reservationSeatRepository.findByReservation(reservationDto.getId());
 
         Reservation reservation = reservationRepository.findById(id)
                 .orElseThrow(() -> new ReservationNotFoundException("[Error] Reservation not found."));
 
         reservation.update(
-                reservationDto.getUserId(),
-                concert,
                 reservationDto.getTotalAmount(),
+                ReservationStatus.fromString(reservationDto.getReservationStatus()),
                 reservationSeats
         );
 

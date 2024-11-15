@@ -26,22 +26,25 @@ public class Reservation extends BaseTimeEntity {
 
     private Integer totalAmount;
 
+    @Enumerated(EnumType.STRING)
+    private ReservationStatus status;
+
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL)
     private List<ReservationSeat> reservationSeats;
 
     @Builder
-    public Reservation(Long id, Long userId, Concert concert, Integer totalAmount, List<ReservationSeat> reservationSeats) {
+    public Reservation(Long id, Long userId, Concert concert, Integer totalAmount, ReservationStatus status, List<ReservationSeat> reservationSeats) {
         this.id = id;
         this.userId = userId;
         this.concert = concert;
         this.totalAmount = totalAmount;
+        this.status = status;
         this.reservationSeats = reservationSeats;
     }
 
-    public void update(Long userId, Concert concert, Integer totalAmount, List<ReservationSeat> reservationSeats) {
-        this.userId = userId;
-        this.concert = concert;
+    public void update(Integer totalAmount, ReservationStatus status, List<ReservationSeat> reservationSeats) {
         this.totalAmount = totalAmount;
+        this.status = status;
         this.reservationSeats = reservationSeats;
     }
 }
