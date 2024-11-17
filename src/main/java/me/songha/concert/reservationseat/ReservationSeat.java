@@ -25,4 +25,12 @@ public class ReservationSeat extends BaseTimeEntity {
     private VenueSeat venueSeat;
 
     private Integer price;
+
+    @Builder
+    public ReservationSeat(Long id, Reservation reservation, VenueSeat venueSeat, Integer price) {
+        this.id = id;
+        this.reservation = reservation;
+        this.venueSeat = venueSeat;
+        this.price = price;
+    }
 }

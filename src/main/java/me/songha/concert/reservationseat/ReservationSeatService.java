@@ -1,46 +1,39 @@
 package me.songha.concert.reservationseat;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.StringRedisTemplate;
+import me.songha.concert.concertseat.ConcertSeatNotFoundException;
+import me.songha.concert.reservation.Reservation;
+import me.songha.concert.reservation.ReservationNotFoundException;
+import me.songha.concert.reservation.ReservationRepository;
+import me.songha.concert.venueseat.VenueSeat;
+import me.songha.concert.venueseat.VenueSeatNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-
+@Transactional
 @RequiredArgsConstructor
 @Service
 public class ReservationSeatService {
-    private final StringRedisTemplate redisTemplate;
     private final ReservationSeatRepository reservationSeatRepository;
+    private final ReservationRepository reservationRepository;
 
-    public boolean reserveSeat(Long concertId, Long seatId, String userId) {
-        String key = String.format("concert:%d:seat:%d", concertId, seatId);
-        Boolean isReserved = redisTemplate.opsForValue().setIfAbsent(key, userId, 10, TimeUnit.MINUTES);
+    public void createReservationSeat(Long reservationId, String seatNumber) {
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new ReservationNotFoundException("[Error] Reservation not found."));
 
-        return Objects.equals(isReserved, true);
-    }
+        VenueSeat venueSeat = reservation.getConcert().getVenue().getVenueSeats().stream().filter(seat -> seat.getSeatNumber().equals(seatNumber))
+                .findFirst().orElseThrow(() -> new VenueSeatNotFoundException("[Error] VenueSeat not found."));
 
-    public List<Long> getSoldSeats(Long concertId) {
-        return reservationSeatRepository.findIdsByConcertId(concertId);
-    }
+        int price = reservation.getConcert().getConcertSeats().stream()
+                .filter(seat -> seat.getVenueSeat().getSeatNumber().equals(seatNumber))
+                .findFirst().orElseThrow(() -> new ConcertSeatNotFoundException("[Error] ConcertSeat not found."))
+                .getPrice();
 
-    public Set<String> getReservedSeats(Long concertId) {
-        String pattern = String.format("concert:%d:seat:*", concertId);
-        return redisTemplate.keys(pattern);
-    }
+        ReservationSeat reservationSeat = ReservationSeat.builder()
+                .price(price)
+                .venueSeat(venueSeat)
+                .reservation(reservation).build();
 
-    public boolean isSeatAvailable(Long concertId, Long seatId) {
-        List<Long> soldSeats = getSoldSeats(concertId);
-        if (soldSeats.contains(seatId)) {
-            return false;
-        }
-        Set<String> reservedSeats = getReservedSeats(concertId);
-        String key = String.format("concert:%d:seat:%d", concertId, seatId);
-        if (reservedSeats.contains(key)) {
-            return false;
-        }
-        return true;
+        reservationSeatRepository.save(reservationSeat);
     }
 }
