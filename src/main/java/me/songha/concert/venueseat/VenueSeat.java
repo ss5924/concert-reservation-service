@@ -21,4 +21,10 @@ public class VenueSeat extends BaseTimeEntity {
     @JoinColumn(name = "venue_id")
     private Venue venue;
 
+    @Builder
+    public VenueSeat(Long id, String seatNumber, Venue venue) {
+        this.id = id;
+        this.seatNumber = seatNumber;
+        this.venue = venue;
+    }
 }
