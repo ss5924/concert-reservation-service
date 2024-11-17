@@ -61,7 +61,7 @@ class ReservationControllerTest {
 
     @DisplayName("userId로 reservations을 조회한다.")
     @Test
-    void testGetReservationsByUserId() throws Exception {
+    void getReservationsByUserId() throws Exception {
         Long userId = 1L;
         int page = 0, size = 10;
         Page<ReservationDto> reservations = new PageImpl<>(reservationList.subList(0, 1));
@@ -82,7 +82,7 @@ class ReservationControllerTest {
 
     @DisplayName("concertId로 reservations을 조회한다.")
     @Test
-    void testGetReservationsByConcertId() throws Exception {
+    void getReservationsByConcertId() throws Exception {
         Long concertId = 1L;
         int page = 0, size = 10;
         Page<ReservationDto> reservations = new PageImpl<>(reservationList);
@@ -108,7 +108,7 @@ class ReservationControllerTest {
 
     @DisplayName("userId와 concertId로 reservation을 조회한다.")
     @Test
-    void testGetReservationByUserIdAndConcertId() throws Exception {
+    void getReservationByUserIdAndConcertId() throws Exception {
         Long userId = 1L;
         Long concertId = 1L;
         ReservationDto reservationDto = reservationList.getFirst();
@@ -128,7 +128,7 @@ class ReservationControllerTest {
 
     @DisplayName("reservation을 생성한다.")
     @Test
-    void testCreateReservation() throws Exception {
+    void createReservation() throws Exception {
         ReservationDto reservationDto = mock(ReservationDto.class);
 
         mockMvc.perform(post("/reservation")
@@ -141,7 +141,7 @@ class ReservationControllerTest {
 
     @DisplayName("reservation을 수정한다.")
     @Test
-    void testUpdateReservation() throws Exception {
+    void updateReservation() throws Exception {
         Long reservationId = 1L;
         ReservationDto reservationDto = mock(ReservationDto.class);
 
@@ -155,7 +155,7 @@ class ReservationControllerTest {
 
     @DisplayName("reservation을 삭제한다.")
     @Test
-    void testDeleteReservation() throws Exception {
+    void deleteReservation() throws Exception {
         Long reservationId = 1L;
 
         mockMvc.perform(delete("/reservation/" + reservationId))

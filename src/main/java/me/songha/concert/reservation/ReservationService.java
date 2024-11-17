@@ -9,9 +9,11 @@ import me.songha.concert.reservationseat.ReservationSeatRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Transactional
 @RequiredArgsConstructor
 @Service
 public class ReservationService {
@@ -42,7 +44,7 @@ public class ReservationService {
                 .orElseThrow(() -> new ReservationNotFoundException("[Error] Reservation not found."));
     }
 
-    public void createReservation(ReservationDto reservationDto) {
+    public Long createReservation(ReservationDto reservationDto) {
         Concert concert = concertRepository.findById(reservationDto.getConcertId())
                 .orElseThrow(() -> new ConcertNotFoundException("[Error] Concert not found."));
 
@@ -50,7 +52,9 @@ public class ReservationService {
 
         Reservation reservation = reservationConverter.toEntity(reservationDto, concert, reservationSeats);
 
-        reservationRepository.save(reservation);
+        Reservation createdReservation = reservationRepository.save(reservation);
+
+        return createdReservation.getId();
     }
 
     public void updateReservation(Long id, ReservationDto reservationDto) {
@@ -64,6 +68,15 @@ public class ReservationService {
                 ReservationStatus.fromString(reservationDto.getReservationStatus()),
                 reservationSeats
         );
+
+        reservationRepository.save(reservation);
+    }
+
+    public void updateReservationStatus(Long id, ReservationStatus status) {
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new ReservationNotFoundException("[Error] Reservation not found."));
+
+        reservation.updateStatus(status);
 
         reservationRepository.save(reservation);
     }

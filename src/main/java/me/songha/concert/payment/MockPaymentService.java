@@ -9,7 +9,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @Service
 public class MockPaymentService {
 
-    public PaymentStatus proceedPayment(Long reservationId, double amount) {
+    public PaymentStatus getPaymentStatus(Long reservationId, int amount) {
         double random = ThreadLocalRandom.current().nextDouble();
 
         if (random < 0.2) { // 취소: 20%
