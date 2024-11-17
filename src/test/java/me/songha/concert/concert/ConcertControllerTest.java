@@ -59,7 +59,7 @@ class ConcertControllerTest {
 
     @DisplayName("concert를 page 처리하여 반환을 테스트한다.")
     @Test
-    public void testGetAllConcerts() throws Exception {
+    public void getAllConcerts() throws Exception {
         Page<ConcertDto> concertPage = new PageImpl<>(concertList);
         Mockito.when(concertService.getAllConcerts(PageRequest.of(0, 10))).thenReturn(concertPage);
 

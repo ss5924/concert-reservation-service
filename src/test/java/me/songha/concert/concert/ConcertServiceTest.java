@@ -70,7 +70,7 @@ class ConcertServiceTest {
     }
 
     @Test
-    public void testGetAllConcerts() {
+    public void getAllConcerts() {
         Pageable pageable = PageRequest.of(0, 10);
 
         Page<Concert> concertPage = new PageImpl<>(concerts);
