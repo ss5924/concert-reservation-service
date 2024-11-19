@@ -1,4 +1,4 @@
-package me.songha.concert.reservation;
+package me.songha.concert.reservation.progress;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
