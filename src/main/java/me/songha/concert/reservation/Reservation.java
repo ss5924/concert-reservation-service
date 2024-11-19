@@ -32,14 +32,18 @@ public class Reservation extends BaseTimeEntity {
     @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL)
     private List<ReservationSeat> reservationSeats;
 
+    private String reservationNumber;
+
     @Builder
-    public Reservation(Long id, Long userId, Concert concert, Integer totalAmount, ReservationStatus status, List<ReservationSeat> reservationSeats) {
+    public Reservation(Long id, Long userId, Concert concert, Integer totalAmount,
+                       ReservationStatus status, List<ReservationSeat> reservationSeats, String reservationNumber) {
         this.id = id;
         this.userId = userId;
         this.concert = concert;
         this.totalAmount = totalAmount;
         this.status = status;
         this.reservationSeats = reservationSeats;
+        this.reservationNumber = reservationNumber;
     }
 
     public void update(Integer totalAmount, ReservationStatus status, List<ReservationSeat> reservationSeats) {
@@ -50,5 +54,9 @@ public class Reservation extends BaseTimeEntity {
 
     public void updateStatus(ReservationStatus status) {
         this.status = status;
+    }
+
+    public void updateReservationNumber(String reservationNumber) {
+        this.reservationNumber = reservationNumber;
     }
 }

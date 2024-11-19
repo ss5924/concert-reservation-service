@@ -27,7 +27,7 @@ public class ReservationConverter {
                 .concertTitle(reservation.getConcert().getTitle())
                 .reservationStatus(reservation.getStatus().toString())
                 .seatNumbers(reservation.getReservationSeats()
-                        .stream().map(reservationSeat -> reservationSeat.getVenueSeat().getSeatNumber()).toList())
+                        .stream().map(reservationSeat -> reservationSeat.getSeat().getSeatNumber()).toList())
                 .build();
     }
 

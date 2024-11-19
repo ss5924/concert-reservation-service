@@ -16,7 +16,7 @@ import java.util.List;
 @Transactional
 @RequiredArgsConstructor
 @Service
-public class ReservationService {
+public class ReservationRepositoryService {
     private final ReservationRepository reservationRepository;
     private final ReservationConverter reservationConverter;
     private final ConcertRepository concertRepository;
@@ -47,11 +47,8 @@ public class ReservationService {
     public Long createReservation(ReservationDto reservationDto) {
         Concert concert = concertRepository.findById(reservationDto.getConcertId())
                 .orElseThrow(() -> new ConcertNotFoundException("[Error] Concert not found."));
-
         List<ReservationSeat> reservationSeats = reservationSeatRepository.findByReservation(reservationDto.getId());
-
         Reservation reservation = reservationConverter.toEntity(reservationDto, concert, reservationSeats);
-
         Reservation createdReservation = reservationRepository.save(reservation);
 
         return createdReservation.getId();
@@ -72,11 +69,12 @@ public class ReservationService {
         reservationRepository.save(reservation);
     }
 
-    public void updateReservationStatus(Long id, ReservationStatus status) {
+    public void updateReservationNumberAndStatus(Long id, String reservationNumber, ReservationStatus status) {
         Reservation reservation = reservationRepository.findById(id)
                 .orElseThrow(() -> new ReservationNotFoundException("[Error] Reservation not found."));
 
         reservation.updateStatus(status);
+        reservation.updateReservationNumber(reservationNumber);
 
         reservationRepository.save(reservation);
     }

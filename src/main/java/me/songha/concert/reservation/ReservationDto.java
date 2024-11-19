@@ -15,12 +15,14 @@ public class ReservationDto {
     private Integer totalAmount;
     private String reservationStatus;
     private List<String> seatNumbers;
+    private String reservationNumber;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     @Builder
-    public ReservationDto(Long id, Long userId, Long concertId, String concertTitle, Integer totalAmount, String reservationStatus,
-                          List<String> seatNumbers, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public ReservationDto(Long id, Long userId, Long concertId, String concertTitle, Integer totalAmount,
+                          String reservationStatus, List<String> seatNumbers, String reservationNumber,
+                          LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.userId = userId;
         this.concertId = concertId;
@@ -28,6 +30,7 @@ public class ReservationDto {
         this.totalAmount = totalAmount;
         this.reservationStatus = reservationStatus;
         this.seatNumbers = seatNumbers;
+        this.reservationNumber = reservationNumber;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }

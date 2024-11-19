@@ -37,7 +37,7 @@ class ReservationControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private ReservationService reservationService;
+    private ReservationRepositoryService reservationRepositoryService;
 
     private List<ReservationDto> reservationList;
 
@@ -66,7 +66,7 @@ class ReservationControllerTest {
         int page = 0, size = 10;
         Page<ReservationDto> reservations = new PageImpl<>(reservationList.subList(0, 1));
 
-        Mockito.when(reservationService.getReservationsByUserId(eq(userId), any(Pageable.class)))
+        Mockito.when(reservationRepositoryService.getReservationsByUserId(eq(userId), any(Pageable.class)))
                 .thenReturn(reservations);
 
         mockMvc.perform(get("/reservation/user-id/" + userId + "?page=" + page + "&size=" + size))
@@ -77,7 +77,7 @@ class ReservationControllerTest {
                 .andExpect(jsonPath("$.content[0].concertId").value(1L))
                 .andExpect(jsonPath("$.content[0].concertTitle").value("Title 1"));
 
-        Mockito.verify(reservationService, times(1)).getReservationsByUserId(eq(userId), any(Pageable.class));
+        Mockito.verify(reservationRepositoryService, times(1)).getReservationsByUserId(eq(userId), any(Pageable.class));
     }
 
     @DisplayName("concertId로 reservations을 조회한다.")
@@ -87,7 +87,7 @@ class ReservationControllerTest {
         int page = 0, size = 10;
         Page<ReservationDto> reservations = new PageImpl<>(reservationList);
 
-        Mockito.when(reservationService.getReservationsByConcertId(eq(concertId), any(Pageable.class)))
+        Mockito.when(reservationRepositoryService.getReservationsByConcertId(eq(concertId), any(Pageable.class)))
                 .thenReturn(reservations);
 
         mockMvc.perform(get("/reservation/concert-id/" + concertId + "?page=" + page + "&size=" + size))
@@ -103,7 +103,7 @@ class ReservationControllerTest {
                 .andExpect(jsonPath("$.content[1].concertTitle").value("Title 1"));
         ;
 
-        Mockito.verify(reservationService, times(1)).getReservationsByConcertId(eq(concertId), any(Pageable.class));
+        Mockito.verify(reservationRepositoryService, times(1)).getReservationsByConcertId(eq(concertId), any(Pageable.class));
     }
 
     @DisplayName("userId와 concertId로 reservation을 조회한다.")
@@ -113,7 +113,7 @@ class ReservationControllerTest {
         Long concertId = 1L;
         ReservationDto reservationDto = reservationList.getFirst();
 
-        Mockito.when(reservationService.getReservationByUserIdAndConcertId(userId, concertId))
+        Mockito.when(reservationRepositoryService.getReservationByUserIdAndConcertId(userId, concertId))
                 .thenReturn(reservationDto);
 
         mockMvc.perform(get("/reservation/user-id/" + userId + "/concert-id/" + concertId))
@@ -123,7 +123,7 @@ class ReservationControllerTest {
                 .andExpect(jsonPath("$.concertId").value(1L))
                 .andExpect(jsonPath("$.concertTitle").value("Title 1"));
 
-        Mockito.verify(reservationService, times(1)).getReservationByUserIdAndConcertId(userId, concertId);
+        Mockito.verify(reservationRepositoryService, times(1)).getReservationByUserIdAndConcertId(userId, concertId);
     }
 
     @DisplayName("reservation을 생성한다.")
@@ -136,7 +136,7 @@ class ReservationControllerTest {
                         .content(objectMapper.writeValueAsString(reservationDto)))
                 .andExpect(status().isCreated());
 
-        Mockito.verify(reservationService, times(1)).createReservation(any(ReservationDto.class));
+        Mockito.verify(reservationRepositoryService, times(1)).createReservation(any(ReservationDto.class));
     }
 
     @DisplayName("reservation을 수정한다.")
@@ -150,7 +150,7 @@ class ReservationControllerTest {
                         .content(objectMapper.writeValueAsString(reservationDto)))
                 .andExpect(status().isOk());
 
-        Mockito.verify(reservationService, times(1)).updateReservation(eq(reservationId), any(ReservationDto.class));
+        Mockito.verify(reservationRepositoryService, times(1)).updateReservation(eq(reservationId), any(ReservationDto.class));
     }
 
     @DisplayName("reservation을 삭제한다.")
@@ -161,6 +161,6 @@ class ReservationControllerTest {
         mockMvc.perform(delete("/reservation/" + reservationId))
                 .andExpect(status().isNoContent());
 
-        Mockito.verify(reservationService, times(1)).deleteReservation(reservationId);
+        Mockito.verify(reservationRepositoryService, times(1)).deleteReservation(reservationId);
     }
 }
