@@ -3,7 +3,7 @@ package me.songha.concert.venue;
 import jakarta.persistence.*;
 import lombok.*;
 import me.songha.concert.common.BaseTimeEntity;
-import me.songha.concert.venueseat.VenueSeat;
+import me.songha.concert.seat.Seat;
 
 import java.util.List;
 
@@ -23,19 +23,19 @@ public class Venue extends BaseTimeEntity {
     private Integer capacity;
 
     @OneToMany(mappedBy = "venue", cascade = CascadeType.ALL)
-    private List<VenueSeat> venueSeats;
+    private List<Seat> seats;
 
     @Builder
-    public Venue(Long id, String name, Integer capacity, List<VenueSeat> venueSeats) {
+    public Venue(Long id, String name, Integer capacity, List<Seat> seats) {
         this.id = id;
         this.name = name;
         this.capacity = capacity;
-        this.venueSeats = venueSeats;
+        this.seats = seats;
     }
 
-    public void update(String name, Integer capacity, List<VenueSeat> venueSeats) {
+    public void update(String name, Integer capacity, List<Seat> seats) {
         this.name = name;
         this.capacity = capacity;
-        this.venueSeats = venueSeats;
+        this.seats = seats;
     }
 }
