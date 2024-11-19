@@ -1,16 +1,17 @@
-package me.songha.concert.venueseat;
+package me.songha.concert.seat;
 
 import jakarta.persistence.*;
 import lombok.*;
 import me.songha.concert.common.BaseTimeEntity;
+import me.songha.concert.concertseat.SeatGrade;
 import me.songha.concert.venue.Venue;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 @Getter
-@Table(name = "VENUE_SEAT")
+@Table(name = "SEAT")
 @Entity
-public class VenueSeat extends BaseTimeEntity {
+public class Seat extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
@@ -21,10 +22,14 @@ public class VenueSeat extends BaseTimeEntity {
     @JoinColumn(name = "venue_id")
     private Venue venue;
 
+    @Enumerated(EnumType.STRING)
+    private SeatGrade grade;
+
     @Builder
-    public VenueSeat(Long id, String seatNumber, Venue venue) {
+    public Seat(Long id, String seatNumber, Venue venue, SeatGrade grade) {
         this.id = id;
         this.seatNumber = seatNumber;
         this.venue = venue;
+        this.grade = grade;
     }
 }
