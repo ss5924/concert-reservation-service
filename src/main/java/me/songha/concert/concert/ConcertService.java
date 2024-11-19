@@ -1,8 +1,8 @@
 package me.songha.concert.concert;
 
 import lombok.RequiredArgsConstructor;
-import me.songha.concert.concertseat.ConcertSeat;
-import me.songha.concert.concertseat.ConcertSeatRepository;
+import me.songha.concert.concertseat.SeatPrice;
+import me.songha.concert.concertseat.SeatPriceRepository;
 import me.songha.concert.venue.Venue;
 import me.songha.concert.venue.VenueNotFoundException;
 import me.songha.concert.venue.VenueRepository;
@@ -19,7 +19,7 @@ import java.util.List;
 public class ConcertService {
     private final ConcertRepository concertRepository;
     private final VenueRepository venueRepository;
-    private final ConcertSeatRepository concertSeatRepository;
+    private final SeatPriceRepository seatPriceRepository;
     private final ConcertConverter concertConverter;
 
     public Page<ConcertDto> getAllConcerts(Pageable pageable) {
@@ -46,13 +46,13 @@ public class ConcertService {
         Venue venue = venueRepository.findByName(concertDto.getVenueName())
                 .orElseThrow(() -> new VenueNotFoundException("[Error] Venue not found."));
 
-        List<ConcertSeat> concertSeats = concertSeatRepository.findByConcertId(concert.getId());
+        List<SeatPrice> seatPrices = seatPriceRepository.findByConcertId(concert.getId());
 
         concert.update(
                 concertDto.getTitle(),
                 concertDto.getDescription(),
                 venue,
-                concertSeats,
+                seatPrices,
                 concertDto.getConcertDate(),
                 concertDto.getRunningTime()
         );

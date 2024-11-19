@@ -3,7 +3,7 @@ package me.songha.concert.concert;
 import jakarta.persistence.*;
 import lombok.*;
 import me.songha.concert.common.BaseTimeEntity;
-import me.songha.concert.concertseat.ConcertSeat;
+import me.songha.concert.concertseat.SeatPrice;
 import me.songha.concert.venue.Venue;
 
 import java.time.LocalDateTime;
@@ -28,7 +28,7 @@ public class Concert extends BaseTimeEntity {
     private Venue venue;
 
     @OneToMany(mappedBy = "concert")
-    private List<ConcertSeat> concertSeats;
+    private List<SeatPrice> seatPrices;
 
     private LocalDateTime concertDate;
 
@@ -39,25 +39,25 @@ public class Concert extends BaseTimeEntity {
     private LocalDateTime salesEndAt;
 
     @Builder
-    public Concert(Long id, String title, String description, Venue venue, List<ConcertSeat> concertSeats,
+    public Concert(Long id, String title, String description, Venue venue, List<SeatPrice> seatPrices,
                    LocalDateTime concertDate, Integer runningTime, LocalDateTime salesStartAt, LocalDateTime salesEndAt) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.venue = venue;
-        this.concertSeats = concertSeats;
+        this.seatPrices = seatPrices;
         this.concertDate = concertDate;
         this.runningTime = runningTime;
         this.salesStartAt = salesStartAt;
         this.salesEndAt = salesEndAt;
     }
 
-    public void update(String title, String description, Venue venue, List<ConcertSeat> concertSeats,
+    public void update(String title, String description, Venue venue, List<SeatPrice> seatPrices,
                        LocalDateTime concertDate, int runningTime) {
         this.title = title;
         this.description = description;
         this.venue = venue;
-        this.concertSeats = concertSeats;
+        this.seatPrices = seatPrices;
         this.concertDate = concertDate;
         this.runningTime = runningTime;
     }
