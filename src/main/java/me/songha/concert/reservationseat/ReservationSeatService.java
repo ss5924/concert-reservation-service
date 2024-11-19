@@ -1,12 +1,13 @@
 package me.songha.concert.reservationseat;
 
 import lombok.RequiredArgsConstructor;
-import me.songha.concert.concertseat.ConcertSeatNotFoundException;
+import me.songha.concert.concertseat.SeatPriceNotFoundException;
+import me.songha.concert.concertseat.SeatPriceRepository;
 import me.songha.concert.reservation.Reservation;
 import me.songha.concert.reservation.ReservationNotFoundException;
 import me.songha.concert.reservation.ReservationRepository;
-import me.songha.concert.venueseat.VenueSeat;
-import me.songha.concert.venueseat.VenueSeatNotFoundException;
+import me.songha.concert.seat.Seat;
+import me.songha.concert.seat.SeatNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,22 +17,22 @@ import org.springframework.transaction.annotation.Transactional;
 public class ReservationSeatService {
     private final ReservationSeatRepository reservationSeatRepository;
     private final ReservationRepository reservationRepository;
+    private final SeatPriceRepository seatPriceRepository;
 
     public void createReservationSeat(Long reservationId, String seatNumber) {
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new ReservationNotFoundException("[Error] Reservation not found."));
 
-        VenueSeat venueSeat = reservation.getConcert().getVenue().getVenueSeats().stream().filter(seat -> seat.getSeatNumber().equals(seatNumber))
-                .findFirst().orElseThrow(() -> new VenueSeatNotFoundException("[Error] VenueSeat not found."));
+        Seat seat = reservation.getConcert().getVenue().getSeats().stream()
+                .filter(s -> s.getSeatNumber().equals(seatNumber))
+                .findFirst().orElseThrow(() -> new SeatNotFoundException("[Error] VenueSeat not found."));
 
-        int price = reservation.getConcert().getConcertSeats().stream()
-                .filter(seat -> seat.getVenueSeat().getSeatNumber().equals(seatNumber))
-                .findFirst().orElseThrow(() -> new ConcertSeatNotFoundException("[Error] ConcertSeat not found."))
-                .getPrice();
+        int price = seatPriceRepository.findAmountByConcertIdAndGrade(reservation.getConcert().getId(), seat.getGrade())
+                .orElseThrow(() -> new SeatPriceNotFoundException("[Error] ConcertSeat not found."));
 
         ReservationSeat reservationSeat = ReservationSeat.builder()
                 .price(price)
-                .venueSeat(venueSeat)
+                .seat(seat)
                 .reservation(reservation).build();
 
         reservationSeatRepository.save(reservationSeat);

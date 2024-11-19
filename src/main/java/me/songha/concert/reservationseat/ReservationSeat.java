@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import me.songha.concert.common.BaseTimeEntity;
 import me.songha.concert.reservation.Reservation;
-import me.songha.concert.venueseat.VenueSeat;
+import me.songha.concert.seat.Seat;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
@@ -22,15 +22,15 @@ public class ReservationSeat extends BaseTimeEntity {
 
     @ManyToOne
     @JoinColumn(name = "venue_seat_id")
-    private VenueSeat venueSeat;
+    private Seat seat;
 
     private Integer price;
 
     @Builder
-    public ReservationSeat(Long id, Reservation reservation, VenueSeat venueSeat, Integer price) {
+    public ReservationSeat(Long id, Reservation reservation, Seat seat, Integer price) {
         this.id = id;
         this.reservation = reservation;
-        this.venueSeat = venueSeat;
+        this.seat = seat;
         this.price = price;
     }
 }
