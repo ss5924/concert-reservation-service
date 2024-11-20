@@ -7,7 +7,7 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.core.RedisTemplate;
 
 @Configuration
-public class RedisConfiguration {
+public class RedisConfig {
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
