@@ -1,11 +1,10 @@
-package me.songha.concert.api;
+package me.songha.concert.concert;
 
 import lombok.RequiredArgsConstructor;
-import me.songha.concert.concert.ConcertDto;
-import me.songha.concert.concert.ConcertRepositoryService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -20,25 +19,28 @@ public class ConcertController {
         return ResponseEntity.ok(concerts);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public ResponseEntity<ConcertDto> getConcert(@PathVariable Long id) {
         ConcertDto concert = concertRepositoryService.getConcert(id);
         return ResponseEntity.ok(concert);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<Void> createConcert(@RequestBody ConcertDto concertDto) {
         concertRepositoryService.createConcert(concertDto);
         return ResponseEntity.status(201).build();
     }
 
-    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/id/{id}")
     public ResponseEntity<Void> updateConcert(@PathVariable Long id, @RequestBody ConcertDto concertDto) {
         concertRepositoryService.updateConcert(id, concertDto);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/id/{id}")
     public ResponseEntity<Void> deleteConcert(@PathVariable Long id) {
         concertRepositoryService.deleteConcert(id);
         return ResponseEntity.noContent().build();

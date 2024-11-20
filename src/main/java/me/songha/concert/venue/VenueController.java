@@ -1,11 +1,10 @@
-package me.songha.concert.api;
+package me.songha.concert.venue;
 
 import lombok.RequiredArgsConstructor;
-import me.songha.concert.venue.VenueDto;
-import me.songha.concert.venue.VenueRepositoryService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/api/venue")
@@ -26,25 +25,28 @@ public class VenueController {
         return ResponseEntity.ok(venueDto);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public ResponseEntity<VenueDto> getVenue(@PathVariable Long id) {
         VenueDto venueDto = venueRepositoryService.getVenue(id);
         return ResponseEntity.ok(venueDto);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<Void> createVenue(@RequestBody VenueDto venueDto) {
         venueRepositoryService.createVenue(venueDto);
         return ResponseEntity.status(201).build();
     }
 
-    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/id/{id}")
     public ResponseEntity<Void> updateVenue(@PathVariable Long id, @RequestBody VenueDto venueDto) {
         venueRepositoryService.updateVenue(id, venueDto);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/id/{id}")
     public ResponseEntity<Void> deleteVenue(@PathVariable Long id) {
         venueRepositoryService.deleteVenue(id);
         return ResponseEntity.noContent().build();
