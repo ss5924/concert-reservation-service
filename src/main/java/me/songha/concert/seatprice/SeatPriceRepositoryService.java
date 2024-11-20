@@ -1,6 +1,7 @@
 package me.songha.concert.seatprice;
 
 import lombok.RequiredArgsConstructor;
+import me.songha.concert.common.ReservationIllegalArgumentException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,10 +18,10 @@ public class SeatPriceRepositoryService {
         List<SeatPrice> prices = seatPriceRepository.findByConcertId(concertId);
 
         int amount = 0;
-        for(Map.Entry<SeatGrade, Integer> entry : tickets.entrySet()) {
+        for (Map.Entry<SeatGrade, Integer> entry : tickets.entrySet()) {
             SeatGrade grade = entry.getKey();
-            int price = prices.stream().filter(p->p.getGrade().equals(grade))
-                    .findFirst().orElseThrow(() -> new IllegalArgumentException("Cannot found price.")).getPrice();
+            int price = prices.stream().filter(p -> p.getGrade().equals(grade))
+                    .findFirst().orElseThrow(() -> new ReservationIllegalArgumentException("[Error] Cannot found price.")).getPrice();
             amount += tickets.get(grade) * price;
         }
 

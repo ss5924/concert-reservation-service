@@ -1,5 +1,7 @@
 package me.songha.concert.seatprice;
 
+import me.songha.concert.common.ReservationIllegalArgumentException;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -13,7 +15,7 @@ public enum SeatGrade {
             case "S" -> S;
             case "A" -> A;
             case "B" -> B;
-            default -> throw new IllegalArgumentException("Invalid reservation status: " + status);
+            default -> throw new ReservationIllegalArgumentException("[Error] Invalid reservation status: " + status);
         };
     }
 

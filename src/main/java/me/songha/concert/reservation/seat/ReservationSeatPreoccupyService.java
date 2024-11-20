@@ -1,6 +1,7 @@
 package me.songha.concert.reservation.seat;
 
 import lombok.RequiredArgsConstructor;
+import me.songha.concert.common.ReservationIllegalArgumentException;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,7 +57,7 @@ public class ReservationSeatPreoccupyService {
         for (String seatNumber : seatNumbers) {
             boolean isValidatedSeatForCurrentUser = String.valueOf(userId).equals(getUserIdByConcertAndSeatNumber(concertId, seatNumber));
             if (!isValidatedSeatForCurrentUser) {
-                throw new IllegalArgumentException("isNotValidatedSeatForCurrentUser");
+                throw new ReservationIllegalArgumentException("[Error] Seat is not validated for current user.");
             }
         }
     }

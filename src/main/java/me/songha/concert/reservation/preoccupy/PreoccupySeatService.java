@@ -2,6 +2,7 @@ package me.songha.concert.reservation.preoccupy;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.songha.concert.common.ReservationIllegalArgumentException;
 import me.songha.concert.reservation.seat.ReservationSeatNotAvailableException;
 import me.songha.concert.reservation.seat.ReservationSeatPreoccupyService;
 import org.springframework.stereotype.Service;
@@ -33,7 +34,7 @@ public class PreoccupySeatService {
 
     private void validateMaxSeatLimit(List<String> seatNumbers) {
         if (seatNumbers.size() > 4) {
-            throw new IllegalArgumentException("Max number of seats is 4.");
+            throw new ReservationIllegalArgumentException("[Error] Max number of seats is 4.");
         }
     }
 

@@ -1,5 +1,7 @@
 package me.songha.concert.reservation.general;
 
+import me.songha.concert.common.ReservationIllegalArgumentException;
+
 public enum ReservationStatus {
     PENDING, PROCESSING, CONFIRMED, CANCELED, REJECTED;
 
@@ -10,7 +12,7 @@ public enum ReservationStatus {
             case "CONFIRMED" -> CONFIRMED;
             case "CANCELED" -> CANCELED;
             case "REJECTED" -> REJECTED;
-            default -> throw new IllegalArgumentException("Invalid reservation status: " + status);
+            default -> throw new ReservationIllegalArgumentException("Invalid reservation status: " + status);
         };
     }
 }

@@ -2,6 +2,7 @@ package me.songha.concert.reservation.progress;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.songha.concert.common.ReservationIllegalArgumentException;
 import me.songha.concert.seatprice.SeatGrade;
 import me.songha.concert.seatprice.SeatPriceRepositoryService;
 import me.songha.concert.payment.MockPaymentService;
@@ -51,15 +52,15 @@ public class ReservationProgressService {
                 log.info("Reservation processing rejected. reservationId={}", reservationId);
                 updateReservationInfo(reservationId, reservationNumber, amount, ReservationStatus.REJECTED);
                 saveHistory(reservationId, userId, amount, ReservationStatus.REJECTED);
-                throw new IllegalStateException("Payment is rejected.");
+                throw new ReservationIllegalArgumentException("[Error] Payment is rejected.");
             }
             case CANCELLED -> {
                 log.info("Reservation processing canceled. reservationId={}", reservationId);
                 updateReservationInfo(reservationId, reservationNumber, amount, ReservationStatus.CANCELED);
                 saveHistory(reservationId, userId, amount, ReservationStatus.CANCELED);
-                throw new IllegalStateException("Payment is cancelled.");
+                throw new ReservationIllegalArgumentException("[Error] Payment is cancelled.");
             }
-            default -> throw new IllegalStateException("Unexpected value: " + paymentStatus);
+            default -> throw new ReservationIllegalArgumentException("[Error] Unexpected value: " + paymentStatus);
         }
     }
 
