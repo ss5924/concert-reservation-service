@@ -7,6 +7,7 @@ import me.songha.concert.reservation.general.ReservationRepositoryService;
 import me.songha.concert.reservation.general.ReservationStatus;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
@@ -20,7 +21,7 @@ public class ReservationPendingConsumer {
     private final StringRedisTemplate redisTemplate;
 
     @KafkaListener(topics = "reservation-topic", groupId = "reservation-group")
-    public void processReservation(ReservationPendingRequest request) {
+    public void processReservation(ReservationPendingRequest request, Acknowledgment acknowledgment) {
         try {
             reservationRequestStatusService.saveStatus(request.getRequestId(), ReservationStatus.PROCESSING.toString());
 
@@ -34,6 +35,8 @@ public class ReservationPendingConsumer {
 
             String key = String.format("reservation-processing-requestId:%s", request.getRequestId());
             redisTemplate.opsForValue().setIfAbsent(key, String.valueOf(reservationId), 10, TimeUnit.MINUTES);
+
+            acknowledgment.acknowledge();
 
         } catch (Exception e) {
             reservationRequestStatusService.saveStatus(request.getRequestId(), ReservationStatus.REJECTED.toString());
