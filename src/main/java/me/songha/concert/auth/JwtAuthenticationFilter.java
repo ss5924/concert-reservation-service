@@ -9,6 +9,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import me.songha.concert.user.JwtUser;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -34,8 +35,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = resolveToken(request);
 
-        if (token == null) {
+        if (request.getRequestURI().startsWith("/api/") && request.getMethod().equals("GET")) {
             filterChain.doFilter(request, response);
+            return;
+        }
+
+        if (token == null) {
+            setErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized: Missing token");
             return;
         }
 

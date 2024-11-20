@@ -1,11 +1,10 @@
 package me.songha.concert.auth;
 
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import me.songha.concert.reservation.ReservationDto;
-import me.songha.concert.reservation.ReservationNotFoundException;
-import me.songha.concert.reservation.ReservationRepositoryService;
+import me.songha.concert.reservation.general.ReservationDto;
+import me.songha.concert.reservation.general.ReservationNotFoundException;
+import me.songha.concert.reservation.general.ReservationRepositoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -21,7 +20,6 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
-import static io.jsonwebtoken.Jwts.builder;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
