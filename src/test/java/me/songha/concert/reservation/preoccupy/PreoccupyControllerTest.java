@@ -39,7 +39,6 @@ class PreoccupyControllerTest {
     void setUp() {
         request = new PreoccupySeatRequest();
         request.setConcertId(1L);
-        request.setUserId(1L);
         request.setSeatNumbers(List.of("A1", "A2"));
 
         response = new PreoccupySeatsResponse(1L, 1L, List.of("A1", "A2"), "msg");
