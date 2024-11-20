@@ -1,8 +1,8 @@
 package me.songha.concert.reservation.seat;
 
 import lombok.RequiredArgsConstructor;
-import me.songha.concert.concertseat.SeatPriceNotFoundException;
-import me.songha.concert.concertseat.SeatPriceRepository;
+import me.songha.concert.seatprice.SeatPriceNotFoundException;
+import me.songha.concert.seatprice.SeatPriceRepository;
 import me.songha.concert.reservation.general.Reservation;
 import me.songha.concert.reservation.general.ReservationNotFoundException;
 import me.songha.concert.reservation.general.ReservationRepository;
@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 @Service
-public class ReservationSeatService {
+public class ReservationSeatRepositoryService {
     private final ReservationSeatRepository reservationSeatRepository;
     private final ReservationRepository reservationRepository;
     private final SeatPriceRepository seatPriceRepository;

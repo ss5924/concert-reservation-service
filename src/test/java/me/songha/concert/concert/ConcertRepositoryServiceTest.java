@@ -23,7 +23,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class ConcertServiceTest {
+class ConcertRepositoryServiceTest {
     @Mock
     private ConcertRepository concertRepository;
 
@@ -34,7 +34,7 @@ class ConcertServiceTest {
     private ConcertConverter concertConverter;
 
     @InjectMocks
-    private ConcertService concertService;
+    private ConcertRepositoryService concertRepositoryService;
 
     private List<ConcertDto> concertList;
 
@@ -79,7 +79,7 @@ class ConcertServiceTest {
         when(concertConverter.toDto(concerts.get(0))).thenReturn(concertList.get(0));
         when(concertConverter.toDto(concerts.get(1))).thenReturn(concertList.get(1));
 
-        Page<ConcertDto> result = concertService.getAllConcerts(pageable);
+        Page<ConcertDto> result = concertRepositoryService.getAllConcerts(pageable);
 
         assertEquals(2, result.getContent().size());
         assertEquals("Title 1", result.getContent().get(0).getTitle());
@@ -98,7 +98,7 @@ class ConcertServiceTest {
         when(concertRepository.findById(concertId)).thenReturn(Optional.of(concert));
         when(concertConverter.toDto(concert)).thenReturn(concertDto);
 
-        ConcertDto result = concertService.getConcert(concertId);
+        ConcertDto result = concertRepositoryService.getConcert(concertId);
 
         assertNotNull(result);
         assertEquals("Title 1", result.getTitle());
@@ -111,7 +111,7 @@ class ConcertServiceTest {
         Long concertId = 1L;
         when(concertRepository.findById(concertId)).thenReturn(Optional.empty());
 
-        assertThrows(ConcertNotFoundException.class, () -> concertService.getConcert(concertId));
+        assertThrows(ConcertNotFoundException.class, () -> concertRepositoryService.getConcert(concertId));
         verify(concertRepository, times(1)).findById(concertId);
     }
 
@@ -128,7 +128,7 @@ class ConcertServiceTest {
         when(venueRepository.findByName(concertDto.getVenueName())).thenReturn(Optional.of(venue));
         when(concertConverter.toEntity(concertDto, venue)).thenReturn(concert);
 
-        concertService.createConcert(concertDto);
+        concertRepositoryService.createConcert(concertDto);
 
         verify(venueRepository, times(1)).findByName(concertDto.getVenueName());
         verify(concertConverter, times(1)).toEntity(concertDto, venue);
@@ -145,7 +145,7 @@ class ConcertServiceTest {
                 .build();
         when(venueRepository.findByName(concertDto.getVenueName())).thenReturn(Optional.empty());
 
-        assertThrows(VenueNotFoundException.class, () -> concertService.createConcert(concertDto));
+        assertThrows(VenueNotFoundException.class, () -> concertRepositoryService.createConcert(concertDto));
         verify(venueRepository, times(1)).findByName(concertDto.getVenueName());
         verifyNoInteractions(concertRepository);
     }
@@ -157,7 +157,7 @@ class ConcertServiceTest {
         Concert concert = mock(Concert.class);
         when(concertRepository.findById(concertId)).thenReturn(Optional.of(concert));
 
-        concertService.deleteConcert(concertId);
+        concertRepositoryService.deleteConcert(concertId);
 
         verify(concertRepository, times(1)).findById(concertId);
         verify(concertRepository, times(1)).delete(concert);
@@ -169,7 +169,7 @@ class ConcertServiceTest {
         Long concertId = 1L;
         when(concertRepository.findById(concertId)).thenReturn(Optional.empty());
 
-        assertThrows(ConcertNotFoundException.class, () -> concertService.deleteConcert(concertId));
+        assertThrows(ConcertNotFoundException.class, () -> concertRepositoryService.deleteConcert(concertId));
 
         verify(concertRepository, times(1)).findById(concertId);
         verify(concertRepository, never()).delete(any());

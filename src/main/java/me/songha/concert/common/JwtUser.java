@@ -1,4 +1,4 @@
-package me.songha.concert.user;
+package me.songha.concert.common;
 
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;

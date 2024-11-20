@@ -1,7 +1,5 @@
 package me.songha.concert.common;
 
-import me.songha.concert.user.CurrentUser;
-import me.songha.concert.user.JwtUser;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

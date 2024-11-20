@@ -2,17 +2,17 @@ package me.songha.concert.reservation.progress;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.songha.concert.concertseat.SeatGrade;
-import me.songha.concert.concertseat.SeatPriceService;
+import me.songha.concert.seatprice.SeatGrade;
+import me.songha.concert.seatprice.SeatPriceRepositoryService;
 import me.songha.concert.payment.MockPaymentService;
 import me.songha.concert.payment.PaymentStatus;
 import me.songha.concert.reservation.general.ReservationRepositoryService;
 import me.songha.concert.reservation.general.ReservationStatus;
 import me.songha.concert.reservation.history.ReservationHistoryDto;
-import me.songha.concert.reservation.history.ReservationHistoryService;
+import me.songha.concert.reservation.history.ReservationHistoryRepositoryService;
 import me.songha.concert.reservation.seat.ReservationSeatPreoccupyService;
-import me.songha.concert.reservation.seat.ReservationSeatService;
-import me.songha.concert.seat.SeatService;
+import me.songha.concert.reservation.seat.ReservationSeatRepositoryService;
+import me.songha.concert.seat.SeatRepositoryService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,10 +27,10 @@ import java.util.Map;
 public class ReservationProgressService {
     private final MockPaymentService mockPaymentService;
     private final ReservationRepositoryService reservationRepositoryService;
-    private final ReservationHistoryService reservationHistoryService;
-    private final ReservationSeatService reservationSeatService;
-    private final SeatPriceService seatPriceService;
-    private final SeatService seatService;
+    private final ReservationHistoryRepositoryService reservationHistoryRepositoryService;
+    private final ReservationSeatRepositoryService reservationSeatRepositoryService;
+    private final SeatPriceRepositoryService seatPriceRepositoryService;
+    private final SeatRepositoryService seatRepositoryService;
     private final ReservationSeatPreoccupyService reservationSeatPreoccupyService;
 
     public void progressReservation(Long reservationId, Long userId, List<String> seatNumbers, Long concertId) {
@@ -65,13 +65,13 @@ public class ReservationProgressService {
 
     private int getTotalAmount(Long concertId, List<String> seatNumbers) {
         Map<SeatGrade, Integer> tickets = getGroupingTickets(seatNumbers);
-        return seatPriceService.getTotalAmount(concertId, tickets);
+        return seatPriceRepositoryService.getTotalAmount(concertId, tickets);
     }
 
     private Map<SeatGrade, Integer> getGroupingTickets(List<String> seatNumbers) {
         Map<SeatGrade, Integer> result = new HashMap<>();
         seatNumbers.forEach(seatNumber -> {
-            SeatGrade grade = seatService.getGradeBySeatNumber(seatNumber);
+            SeatGrade grade = seatRepositoryService.getGradeBySeatNumber(seatNumber);
             result.put(grade, result.getOrDefault(grade, 0) + 1);
         });
         return result;
@@ -89,7 +89,7 @@ public class ReservationProgressService {
                     .amount(amount)
                     .reservationStatus(status.toString())
                     .build();
-            reservationHistoryService.createReservationHistory(reservationHistoryDto);
+            reservationHistoryRepositoryService.createReservationHistory(reservationHistoryDto);
         } catch (Exception e) {
             log.error("[Error] Failed to save History. e.getMessage:{}", e.getMessage(), e);
         }
@@ -97,7 +97,7 @@ public class ReservationProgressService {
 
     private void reserveSeats(Long reservationId, List<String> seatNumbers) {
         for (String seatNumber : seatNumbers) {
-            reservationSeatService.createReservationSeat(reservationId, seatNumber);
+            reservationSeatRepositoryService.createReservationSeat(reservationId, seatNumber);
         }
     }
 

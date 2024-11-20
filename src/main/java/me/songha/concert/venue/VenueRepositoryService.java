@@ -13,7 +13,7 @@ import java.util.List;
 @Transactional
 @RequiredArgsConstructor
 @Service
-public class VenueService {
+public class VenueRepositoryService {
     private final VenueRepository venueRepository;
     private final VenueConverter venueConverter;
     private final SeatRepository seatRepository;

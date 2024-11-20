@@ -1,4 +1,4 @@
-package me.songha.concert.concertseat;
+package me.songha.concert.seatprice;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

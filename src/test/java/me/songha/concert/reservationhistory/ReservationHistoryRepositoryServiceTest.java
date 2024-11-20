@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-class ReservationHistoryServiceTest {
+class ReservationHistoryRepositoryServiceTest {
     @Mock
     private ReservationHistoryRepository reservationHistoryRepository;
 
@@ -28,7 +28,7 @@ class ReservationHistoryServiceTest {
     private ReservationRepository reservationRepository;
 
     @InjectMocks
-    private ReservationHistoryService reservationHistoryService;
+    private ReservationHistoryRepositoryService reservationHistoryRepositoryService;
 
     private ReservationHistory reservationHistory;
 
@@ -53,7 +53,7 @@ class ReservationHistoryServiceTest {
         when(reservationHistoryRepository.findById(historyId)).thenReturn(Optional.of(reservationHistory));
         when(reservationHistoryConverter.toDto(reservationHistory)).thenReturn(reservationHistoryDto);
 
-        ReservationHistoryDto result = reservationHistoryService.getReservationHistoryById(historyId);
+        ReservationHistoryDto result = reservationHistoryRepositoryService.getReservationHistoryById(historyId);
 
         assertNotNull(result);
         verify(reservationHistoryRepository, times(1)).findById(historyId);
@@ -70,7 +70,7 @@ class ReservationHistoryServiceTest {
                 .thenReturn(Optional.of(reservationHistory));
         when(reservationHistoryConverter.toDto(reservationHistory)).thenReturn(reservationHistoryDto);
 
-        ReservationHistoryDto result = reservationHistoryService.getReservationHistoryById(userId, reservationId);
+        ReservationHistoryDto result = reservationHistoryRepositoryService.getReservationHistoryById(userId, reservationId);
 
         assertNotNull(result);
         verify(reservationHistoryRepository, times(1)).findByUserIdAndReservationId(userId, reservationId);
@@ -87,7 +87,7 @@ class ReservationHistoryServiceTest {
         when(reservationRepository.findById(reservationId)).thenReturn(Optional.of(reservation));
         when(reservationHistoryConverter.toEntity(reservationHistoryDto, reservation)).thenReturn(reservationHistory);
 
-        reservationHistoryService.createReservationHistory(reservationHistoryDto);
+        reservationHistoryRepositoryService.createReservationHistory(reservationHistoryDto);
 
         verify(reservationRepository, times(1)).findById(reservationId);
         verify(reservationHistoryConverter, times(1)).toEntity(reservationHistoryDto, reservation);
@@ -101,7 +101,7 @@ class ReservationHistoryServiceTest {
 
         when(reservationHistoryRepository.findById(historyId)).thenReturn(Optional.empty());
 
-        assertThrows(ReservationHistoryNotFoundException.class, () -> reservationHistoryService.getReservationHistoryById(historyId));
+        assertThrows(ReservationHistoryNotFoundException.class, () -> reservationHistoryRepositoryService.getReservationHistoryById(historyId));
 
         verify(reservationHistoryRepository, times(1)).findById(historyId);
     }
@@ -113,7 +113,7 @@ class ReservationHistoryServiceTest {
 
         when(reservationRepository.findById(reservationId)).thenReturn(Optional.empty());
 
-        assertThrows(ReservationNotFoundException.class, () -> reservationHistoryService.createReservationHistory(reservationHistoryDto));
+        assertThrows(ReservationNotFoundException.class, () -> reservationHistoryRepositoryService.createReservationHistory(reservationHistoryDto));
 
         verify(reservationRepository, times(1)).findById(reservationId);
         verify(reservationHistoryConverter, never()).toEntity(any(), any());

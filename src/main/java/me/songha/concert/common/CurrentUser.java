@@ -1,4 +1,4 @@
-package me.songha.concert.user;
+package me.songha.concert.common;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

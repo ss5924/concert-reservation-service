@@ -1,7 +1,7 @@
 package me.songha.concert.venue;
 
-import me.songha.concert.venueseat.VenueSeat;
-import me.songha.concert.venueseat.VenueSeatRepository;
+import me.songha.concert.seat.Seat;
+import me.songha.concert.seat.SeatRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
-class VenueServiceTest {
+class VenueRepositoryServiceTest {
     @Mock
     private VenueRepository venueRepository;
 
@@ -29,10 +29,10 @@ class VenueServiceTest {
     private VenueConverter venueConverter;
 
     @Mock
-    private VenueSeatRepository venueSeatRepository;
+    private SeatRepository seatRepository;
 
     @InjectMocks
-    private VenueService venueService;
+    private VenueRepositoryService venueRepositoryService;
 
     private List<Venue> venues;
 
@@ -61,7 +61,7 @@ class VenueServiceTest {
         when(venueRepository.findAll(pageable)).thenReturn(venuePage);
         when(venueConverter.toDto(any(Venue.class))).thenReturn(venueDto);
 
-        Page<VenueDto> result = venueService.getAllVenues(pageable);
+        Page<VenueDto> result = venueRepositoryService.getAllVenues(pageable);
 
         assertNotNull(result);
         assertEquals(2, result.getTotalElements());
@@ -78,7 +78,7 @@ class VenueServiceTest {
         when(venueRepository.findByName(venueName)).thenReturn(Optional.of(venue));
         when(venueConverter.toDto(any(Venue.class))).thenReturn(venueDto);
 
-        VenueDto result = venueService.getVenueByName(venueName);
+        VenueDto result = venueRepositoryService.getVenueByName(venueName);
 
         assertNotNull(result);
         assertEquals(venueName, result.getName());
@@ -95,7 +95,7 @@ class VenueServiceTest {
         when(venueRepository.findById(venueId)).thenReturn(Optional.of(venue));
         when(venueConverter.toDto(venue)).thenReturn(venueDto);
 
-        VenueDto result = venueService.getVenue(venueId);
+        VenueDto result = venueRepositoryService.getVenue(venueId);
 
         assertNotNull(result);
         assertEquals(venueId, result.getId());
@@ -106,14 +106,14 @@ class VenueServiceTest {
     @Test
     void createVenue() {
         VenueDto venueDto = venueList.getFirst();
-        List<VenueSeat> venueSeats = Collections.emptyList();
+        List<Seat> seats = Collections.emptyList();
 
-        when(venueSeatRepository.findByVenueId(venueDto.getId())).thenReturn(venueSeats);
-        when(venueConverter.toEntity(venueDto, venueSeats)).thenReturn(venues.getFirst());
+        when(seatRepository.findByVenueId(venueDto.getId())).thenReturn(seats);
+        when(venueConverter.toEntity(venueDto, seats)).thenReturn(venues.getFirst());
 
-        venueService.createVenue(venueDto);
+        venueRepositoryService.createVenue(venueDto);
 
-        verify(venueSeatRepository, times(1)).findByVenueId(venueDto.getId());
+        verify(seatRepository, times(1)).findByVenueId(venueDto.getId());
         verify(venueRepository, times(1)).save(any(Venue.class));
     }
 
@@ -123,17 +123,17 @@ class VenueServiceTest {
         Long venueId = 3L;
         VenueDto venueDto = VenueDto.builder().id(3L).name("Update Venue").build();
         Venue venue = Venue.builder().id(3L).name("Old Venue").build();
-        List<VenueSeat> venueSeats = Collections.emptyList();
+        List<Seat> seats = Collections.emptyList();
 
         when(venueRepository.findById(venueId)).thenReturn(Optional.of(venue));
-        when(venueSeatRepository.findByVenueId(venueId)).thenReturn(venueSeats);
-        when(venueConverter.toEntity(venueDto, venueSeats))
-                .thenReturn(Venue.builder().id(3L).name("Update Venue").venueSeats(Collections.emptyList()).build());
+        when(seatRepository.findByVenueId(venueId)).thenReturn(seats);
+        when(venueConverter.toEntity(venueDto, seats))
+                .thenReturn(Venue.builder().id(3L).name("Update Venue").seats(Collections.emptyList()).build());
 
-        venueService.updateVenue(venueId, venueDto);
+        venueRepositoryService.updateVenue(venueId, venueDto);
 
         verify(venueRepository, times(1)).findById(venueId);
-        verify(venueSeatRepository, times(1)).findByVenueId(venueId);
+        verify(seatRepository, times(1)).findByVenueId(venueId);
         verify(venueRepository, times(1)).save(any(Venue.class));
     }
 
@@ -145,7 +145,7 @@ class VenueServiceTest {
 
         when(venueRepository.findById(venueId)).thenReturn(Optional.of(venue));
 
-        venueService.deleteVenue(venueId);
+        venueRepositoryService.deleteVenue(venueId);
 
         verify(venueRepository, times(1)).findById(venueId);
         verify(venueRepository, times(1)).delete(venue);

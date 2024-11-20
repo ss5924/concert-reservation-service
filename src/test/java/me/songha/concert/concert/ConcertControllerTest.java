@@ -1,6 +1,7 @@
 package me.songha.concert.concert;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import me.songha.concert.api.ConcertController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,7 +38,7 @@ class ConcertControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private ConcertService concertService;
+    private ConcertRepositoryService concertRepositoryService;
 
     private List<ConcertDto> concertList;
 
@@ -61,7 +62,7 @@ class ConcertControllerTest {
     @Test
     public void getAllConcerts() throws Exception {
         Page<ConcertDto> concertPage = new PageImpl<>(concertList);
-        Mockito.when(concertService.getAllConcerts(PageRequest.of(0, 10))).thenReturn(concertPage);
+        Mockito.when(concertRepositoryService.getAllConcerts(PageRequest.of(0, 10))).thenReturn(concertPage);
 
         mockMvc.perform(get("/concert/all")
                         .param("page", "0")
@@ -74,7 +75,7 @@ class ConcertControllerTest {
                 .andExpect(jsonPath("$.content[1].id").value(2L))
                 .andExpect(jsonPath("$.content[1].title").value("Title 2"));
 
-        Mockito.verify(concertService, Mockito.times(1)).getAllConcerts(PageRequest.of(0, 10));
+        Mockito.verify(concertRepositoryService, Mockito.times(1)).getAllConcerts(PageRequest.of(0, 10));
     }
 
     @DisplayName("concert를 id로 반환한다.")
@@ -82,7 +83,7 @@ class ConcertControllerTest {
     void getConcert() throws Exception {
         Long concertId = 1L;
         ConcertDto concertDto = concertList.getFirst();
-        Mockito.when(concertService.getConcert(concertId)).thenReturn(concertDto);
+        Mockito.when(concertRepositoryService.getConcert(concertId)).thenReturn(concertDto);
 
         mockMvc.perform(get("/concert/{id}", concertId)
                         .accept(MediaType.APPLICATION_JSON))
@@ -103,7 +104,7 @@ class ConcertControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(concertDto)))
                 .andExpect(status().isCreated());
-        Mockito.verify(concertService).createConcert(any(ConcertDto.class));
+        Mockito.verify(concertRepositoryService).createConcert(any(ConcertDto.class));
     }
 
     @DisplayName("concert를 업데이트한다.")
@@ -116,7 +117,7 @@ class ConcertControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(concertDto)))
                 .andExpect(status().isOk());
-        Mockito.verify(concertService).updateConcert(eq(concertId), any(ConcertDto.class));
+        Mockito.verify(concertRepositoryService).updateConcert(eq(concertId), any(ConcertDto.class));
     }
 
     @DisplayName("concert를 삭제한다.")
@@ -126,6 +127,6 @@ class ConcertControllerTest {
 
         mockMvc.perform(delete("/concert/{id}", concertId))
                 .andExpect(status().isNoContent());
-        Mockito.verify(concertService).deleteConcert(concertId);
+        Mockito.verify(concertRepositoryService).deleteConcert(concertId);
     }
 }

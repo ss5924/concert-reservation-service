@@ -4,8 +4,6 @@ import lombok.RequiredArgsConstructor;
 import me.songha.concert.concert.Concert;
 import me.songha.concert.concert.ConcertNotFoundException;
 import me.songha.concert.concert.ConcertRepository;
-import me.songha.concert.reservation.seat.ReservationSeat;
-import me.songha.concert.reservation.seat.ReservationSeatRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,7 +18,6 @@ public class ReservationRepositoryService {
     private final ReservationRepository reservationRepository;
     private final ReservationConverter reservationConverter;
     private final ConcertRepository concertRepository;
-    private final ReservationSeatRepository reservationSeatRepository;
 
     public Page<ReservationDto> getReservationsByUserId(Long userId, Pageable pageable) {
         return reservationRepository.findByUserId(userId, pageable)
@@ -47,8 +44,7 @@ public class ReservationRepositoryService {
     public Long createReservation(ReservationDto reservationDto) {
         Concert concert = concertRepository.findById(reservationDto.getConcertId())
                 .orElseThrow(() -> new ConcertNotFoundException("[Error] Concert not found."));
-        List<ReservationSeat> reservationSeats = reservationSeatRepository.findByReservation(reservationDto.getId());
-        Reservation reservation = reservationConverter.toEntity(reservationDto, concert, reservationSeats);
+        Reservation reservation = reservationConverter.toEntity(reservationDto, concert, List.of());
         Reservation createdReservation = reservationRepository.save(reservation);
 
         return createdReservation.getId();

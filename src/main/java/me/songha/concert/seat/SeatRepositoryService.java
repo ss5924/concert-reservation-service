@@ -1,12 +1,12 @@
 package me.songha.concert.seat;
 
 import lombok.RequiredArgsConstructor;
-import me.songha.concert.concertseat.SeatGrade;
+import me.songha.concert.seatprice.SeatGrade;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
-public class SeatService {
+public class SeatRepositoryService {
     private final SeatRepository seatRepository;
 
     public SeatGrade getGradeBySeatNumber(String seatNumber) {

@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 @Service
-public class ReservationHistoryService {
+public class ReservationHistoryRepositoryService {
     private final ReservationHistoryRepository reservationHistoryRepository;
     private final ReservationHistoryConverter reservationHistoryConverter;
     private final ReservationRepository reservationRepository;

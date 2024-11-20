@@ -1,4 +1,4 @@
-package me.songha.concert.concertseat;
+package me.songha.concert.seatprice;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,7 +10,7 @@ import java.util.Map;
 @Transactional
 @RequiredArgsConstructor
 @Service
-public class SeatPriceService {
+public class SeatPriceRepositoryService {
     private final SeatPriceRepository seatPriceRepository;
 
     public int getTotalAmount(Long concertId, Map<SeatGrade, Integer> tickets) {

@@ -1,4 +1,4 @@
-package me.songha.concert.concertseat;
+package me.songha.concert.seatprice;
 
 import me.songha.concert.common.NotFoundException;
 

@@ -3,7 +3,7 @@ package me.songha.concert.concert;
 import jakarta.persistence.*;
 import lombok.*;
 import me.songha.concert.common.BaseTimeEntity;
-import me.songha.concert.concertseat.SeatPrice;
+import me.songha.concert.seatprice.SeatPrice;
 import me.songha.concert.venue.Venue;
 
 import java.time.LocalDateTime;
@@ -52,12 +52,11 @@ public class Concert extends BaseTimeEntity {
         this.salesEndAt = salesEndAt;
     }
 
-    public void update(String title, String description, Venue venue, List<SeatPrice> seatPrices,
+    public void update(String title, String description, Venue venue,
                        LocalDateTime concertDate, int runningTime) {
         this.title = title;
         this.description = description;
         this.venue = venue;
-        this.seatPrices = seatPrices;
         this.concertDate = concertDate;
         this.runningTime = runningTime;
     }

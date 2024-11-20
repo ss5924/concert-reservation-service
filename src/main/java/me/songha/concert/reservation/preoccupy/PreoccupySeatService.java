@@ -2,8 +2,8 @@ package me.songha.concert.reservation.preoccupy;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.songha.concert.reservationseat.ReservationSeatNotAvailableException;
-import me.songha.concert.reservationseat.ReservationSeatPreoccupyService;
+import me.songha.concert.reservation.seat.ReservationSeatNotAvailableException;
+import me.songha.concert.reservation.seat.ReservationSeatPreoccupyService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

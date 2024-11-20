@@ -3,7 +3,7 @@ package me.songha.concert.seat;
 import jakarta.persistence.*;
 import lombok.*;
 import me.songha.concert.common.BaseTimeEntity;
-import me.songha.concert.concertseat.SeatGrade;
+import me.songha.concert.seatprice.SeatGrade;
 import me.songha.concert.venue.Venue;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

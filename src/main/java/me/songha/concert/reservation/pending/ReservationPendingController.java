@@ -1,8 +1,8 @@
 package me.songha.concert.reservation.pending;
 
 import lombok.RequiredArgsConstructor;
-import me.songha.concert.reservation.ReservationStatus;
-import me.songha.concert.user.CurrentUser;
+import me.songha.concert.reservation.general.ReservationStatus;
+import me.songha.concert.common.CurrentUser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

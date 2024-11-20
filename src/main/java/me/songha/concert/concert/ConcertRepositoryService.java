@@ -1,8 +1,7 @@
 package me.songha.concert.concert;
 
 import lombok.RequiredArgsConstructor;
-import me.songha.concert.concertseat.SeatPrice;
-import me.songha.concert.concertseat.SeatPriceRepository;
+import me.songha.concert.seatprice.SeatPriceRepository;
 import me.songha.concert.venue.Venue;
 import me.songha.concert.venue.VenueNotFoundException;
 import me.songha.concert.venue.VenueRepository;
@@ -11,12 +10,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Transactional
 @RequiredArgsConstructor
 @Service
-public class ConcertService {
+public class ConcertRepositoryService {
     private final ConcertRepository concertRepository;
     private final VenueRepository venueRepository;
     private final SeatPriceRepository seatPriceRepository;
@@ -46,13 +43,10 @@ public class ConcertService {
         Venue venue = venueRepository.findByName(concertDto.getVenueName())
                 .orElseThrow(() -> new VenueNotFoundException("[Error] Venue not found."));
 
-        List<SeatPrice> seatPrices = seatPriceRepository.findByConcertId(concert.getId());
-
         concert.update(
                 concertDto.getTitle(),
                 concertDto.getDescription(),
                 venue,
-                seatPrices,
                 concertDto.getConcertDate(),
                 concertDto.getRunningTime()
         );

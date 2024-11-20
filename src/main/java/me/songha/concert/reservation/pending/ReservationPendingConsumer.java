@@ -2,9 +2,9 @@ package me.songha.concert.reservation.pending;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import me.songha.concert.reservation.ReservationDto;
-import me.songha.concert.reservation.ReservationRepositoryService;
-import me.songha.concert.reservation.ReservationStatus;
+import me.songha.concert.reservation.general.ReservationDto;
+import me.songha.concert.reservation.general.ReservationRepositoryService;
+import me.songha.concert.reservation.general.ReservationStatus;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,10 @@ public class ReservationPendingConsumer {
             reservationRequestStatusService.saveStatus(request.getRequestId(), ReservationStatus.PROCESSING.toString());
 
             ReservationDto reservationDto = ReservationDto.builder()
-                    .userId(request.getUserId()).concertId(request.getConcertId()).build();
+                    .userId(request.getUserId())
+                    .concertId(request.getConcertId())
+                    .reservationStatus(ReservationStatus.PROCESSING.toString())
+                    .build();
 
             Long reservationId = reservationRepositoryService.createReservation(reservationDto);
 
