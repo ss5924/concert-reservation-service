@@ -20,7 +20,7 @@ public class Reservation extends BaseTimeEntity {
 
     private Long userId;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "concert_id")
     private Concert concert;
 
@@ -29,7 +29,7 @@ public class Reservation extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private ReservationStatus status;
 
-    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "reservation")
     private List<ReservationSeat> reservationSeats;
 
     private String reservationNumber;
@@ -46,17 +46,13 @@ public class Reservation extends BaseTimeEntity {
         this.reservationNumber = reservationNumber;
     }
 
-    public void update(Integer totalAmount, ReservationStatus status, List<ReservationSeat> reservationSeats) {
+    public void update(Integer totalAmount, ReservationStatus status, String reservationNumber) {
         this.totalAmount = totalAmount;
         this.status = status;
-        this.reservationSeats = reservationSeats;
+        this.reservationNumber = reservationNumber;
     }
 
     public void updateStatus(ReservationStatus status) {
         this.status = status;
-    }
-
-    public void updateReservationNumber(String reservationNumber) {
-        this.reservationNumber = reservationNumber;
     }
 }

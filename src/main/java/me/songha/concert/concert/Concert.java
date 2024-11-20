@@ -23,7 +23,7 @@ public class Concert extends BaseTimeEntity {
 
     private String description;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "venue_id")
     private Venue venue;
 

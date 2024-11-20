@@ -12,6 +12,6 @@ public interface ReservationSeatRepository extends JpaRepository<ReservationSeat
     @Query("select rs.id from ReservationSeat rs where rs.reservation.concert.id = :concertId")
     List<Long> findIdsByConcertId(Long concertId);
 
-    @Query("select rs.venueSeat.seatNumber from ReservationSeat rs where rs.reservation.concert.id = :concertId")
+    @Query("select rs.seat.seatNumber from ReservationSeat rs where rs.reservation.concert.id = :concertId")
     List<String> findSeatNumbersByConcertId(Long concertId);
 }

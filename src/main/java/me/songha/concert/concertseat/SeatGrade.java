@@ -20,4 +20,10 @@ public enum SeatGrade {
     public static List<SeatGrade> toList() {
         return Arrays.asList(SeatGrade.values());
     }
+
+    public static List<String> toStringList() {
+        return Arrays.stream(SeatGrade.values())
+                .map(Enum::name)
+                .toList();
+    }
 }

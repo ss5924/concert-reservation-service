@@ -18,7 +18,7 @@ public class ReservationHistory extends BaseTimeEntity {
 
     private Long userId;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "reservation_id")
     private Reservation reservation;
 
