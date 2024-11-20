@@ -1,6 +1,7 @@
 package me.songha.concert.common;
 
 import me.songha.concert.user.CurrentUser;
+import me.songha.concert.user.JwtUser;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,6 +26,12 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
         if (authentication == null || !authentication.isAuthenticated()) {
             return null;
         }
-        return authentication.getPrincipal();
+
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof JwtUser) {
+            return ((JwtUser) principal).getUserId();
+        }
+
+        return null;
     }
 }

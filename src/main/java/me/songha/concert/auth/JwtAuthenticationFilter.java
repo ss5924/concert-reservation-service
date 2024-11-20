@@ -1,66 +1,98 @@
 package me.songha.concert.auth;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import me.songha.concert.user.JwtUser;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.crypto.SecretKey;
 import java.io.IOException;
-import java.util.Date;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.Set;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private static final SecretKey key = Keys.secretKeyFor(io.jsonwebtoken.SignatureAlgorithm.HS256);
-
-    public static SecretKey getKey() {
-        return key;
-    }
+    private static final String SECRET_KEY = "my-fixed-secret-key-my-fixed-secret-key";
+    private static final SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+    private static final Set<String> VALID_ROLES = Set.of("ADMIN", "USER");
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String authHeader = request.getHeader("Authorization");
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Unauthorized: Missing or invalid token");
+        String token = resolveToken(request);
+
+        if (token == null) {
+            filterChain.doFilter(request, response);
             return;
         }
 
-        String token = authHeader.substring(7);
-
         try {
-            Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+            Claims claims = validateAndExtractClaims(token);
+            String role = claims.get("role", String.class);
 
-            if (claims.getExpiration().before(new Date())) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("Unauthorized: Token expired");
+            if (!isValidRole(role)) {
+                setErrorResponse(response, HttpServletResponse.SC_FORBIDDEN, "Forbidden: Insufficient permissions");
                 return;
             }
 
-            String role = (String) claims.get("role");
-            if (!Set.of("ADMIN", "USER").contains(role)) {
-                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                response.getWriter().write("Forbidden: Insufficient permissions");
-                return;
-            }
+            Authentication authentication = buildAuthentication(claims);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            request.setAttribute("userId", claims.getSubject());
-            request.setAttribute("role", claims.get("role"));
+        } catch (ExpiredJwtException e) {
+            setErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized: Token expired");
+            return;
         } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Unauthorized: Token validation failed");
+            setErrorResponse(response, HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized: Token validation failed");
             return;
         }
 
         filterChain.doFilter(request, response);
     }
 
+    private String resolveToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        return bearerToken != null && bearerToken.startsWith("Bearer ") ? bearerToken.substring(7) : null;
+    }
+
+    private Claims validateAndExtractClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    private boolean isValidRole(String role) {
+        return role != null && VALID_ROLES.contains(role);
+    }
+
+    private Authentication buildAuthentication(Claims claims) {
+        Long userId = claims.get("userId", Long.class);
+        String username = claims.get("username", String.class);
+        String role = claims.get("role", String.class);
+
+        JwtUser jwtUser = new JwtUser(
+                userId, username, role, Collections.singleton(new SimpleGrantedAuthority("ROLE_" + role)));
+
+        return new UsernamePasswordAuthenticationToken(jwtUser, null, jwtUser.getAuthorities());
+    }
+
+    private void setErrorResponse(HttpServletResponse response, int status, String message) throws IOException {
+        response.setStatus(status);
+        response.setContentType("application/json");
+        response.getWriter().write(String.format("{\"message\":\"%s\"}", message));
+    }
 }

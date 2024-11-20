@@ -1,9 +1,11 @@
 package me.songha.concert.auth;
 
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import me.songha.concert.reservation.ReservationDto;
 import me.songha.concert.reservation.ReservationNotFoundException;
-import me.songha.concert.reservation.ReservationService;
+import me.songha.concert.reservation.ReservationRepositoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -16,8 +18,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
+import static io.jsonwebtoken.Jwts.builder;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -33,11 +37,12 @@ public class JwtAuthenticationFilterTest {
     private String expiredToken;
 
     @MockBean
-    private ReservationService reservationService;
+    private ReservationRepositoryService reservationRepositoryService;
 
     @BeforeEach
     void setUp() {
-        key = JwtAuthenticationFilter.getKey();
+        String SECRET_KEY = "my-fixed-secret-key-my-fixed-secret-key";
+        key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
 
         validToken = Jwts.builder()
                 .setSubject("user123")
@@ -55,10 +60,10 @@ public class JwtAuthenticationFilterTest {
 
         ReservationDto reservationDto = ReservationDto.builder().id(1L).userId(1L).totalAmount(100).build();
 
-        Mockito.when(reservationService.getReservation(1L))
+        Mockito.when(reservationRepositoryService.getReservation(1L))
                 .thenReturn(reservationDto);
 
-        Mockito.when(reservationService.getReservation(99L))
+        Mockito.when(reservationRepositoryService.getReservation(99L))
                 .thenThrow(new ReservationNotFoundException("[Error] Reservation not found."));
     }
 
@@ -101,5 +106,19 @@ public class JwtAuthenticationFilterTest {
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + validToken)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void generateJWT() {
+        String jwt = Jwts.builder()
+                .claim("userId", 321L)
+                .setSubject("userId123")
+                .claim("role", "USER")
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 300 * 60 * 60 * 24)) // 300일 유효
+                .signWith(key)
+                .compact();
+
+        System.out.println(jwt);
     }
 }
