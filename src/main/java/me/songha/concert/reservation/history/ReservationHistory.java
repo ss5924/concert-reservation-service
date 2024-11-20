@@ -1,10 +1,10 @@
-package me.songha.concert.reservationhistory;
+package me.songha.concert.reservation.history;
 
 import jakarta.persistence.*;
 import lombok.*;
 import me.songha.concert.common.BaseTimeEntity;
-import me.songha.concert.reservation.Reservation;
-import me.songha.concert.reservation.ReservationStatus;
+import me.songha.concert.reservation.general.Reservation;
+import me.songha.concert.reservation.general.ReservationStatus;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString

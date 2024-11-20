@@ -1,6 +1,8 @@
 package me.songha.concert.reservationseat;
 
 import com.github.fppt.jedismock.RedisServer;
+import me.songha.concert.reservation.seat.ReservationSeatPreoccupyService;
+import me.songha.concert.reservation.seat.ReservationSeatRepository;
 import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
 import org.springframework.boot.test.autoconfigure.data.redis.DataRedisTest;

@@ -1,11 +1,11 @@
-package me.songha.concert.reservation;
+package me.songha.concert.reservation.general;
 
 import lombok.RequiredArgsConstructor;
 import me.songha.concert.concert.Concert;
 import me.songha.concert.concert.ConcertNotFoundException;
 import me.songha.concert.concert.ConcertRepository;
-import me.songha.concert.reservationseat.ReservationSeat;
-import me.songha.concert.reservationseat.ReservationSeatRepository;
+import me.songha.concert.reservation.seat.ReservationSeat;
+import me.songha.concert.reservation.seat.ReservationSeatRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -54,27 +54,11 @@ public class ReservationRepositoryService {
         return createdReservation.getId();
     }
 
-    public void updateReservation(Long id, ReservationDto reservationDto) {
-        List<ReservationSeat> reservationSeats = reservationSeatRepository.findByReservation(reservationDto.getId());
-
+    public void updateReservationInfo(Long id, String reservationNumber, int amount, ReservationStatus status) {
         Reservation reservation = reservationRepository.findById(id)
                 .orElseThrow(() -> new ReservationNotFoundException("[Error] Reservation not found."));
 
-        reservation.update(
-                reservationDto.getTotalAmount(),
-                ReservationStatus.fromString(reservationDto.getReservationStatus()),
-                reservationSeats
-        );
-
-        reservationRepository.save(reservation);
-    }
-
-    public void updateReservationNumberAndStatus(Long id, String reservationNumber, ReservationStatus status) {
-        Reservation reservation = reservationRepository.findById(id)
-                .orElseThrow(() -> new ReservationNotFoundException("[Error] Reservation not found."));
-
-        reservation.updateStatus(status);
-        reservation.updateReservationNumber(reservationNumber);
+        reservation.update(amount, status, reservationNumber);
 
         reservationRepository.save(reservation);
     }

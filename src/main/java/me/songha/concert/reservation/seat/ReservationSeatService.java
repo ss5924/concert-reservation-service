@@ -1,11 +1,11 @@
-package me.songha.concert.reservationseat;
+package me.songha.concert.reservation.seat;
 
 import lombok.RequiredArgsConstructor;
 import me.songha.concert.concertseat.SeatPriceNotFoundException;
 import me.songha.concert.concertseat.SeatPriceRepository;
-import me.songha.concert.reservation.Reservation;
-import me.songha.concert.reservation.ReservationNotFoundException;
-import me.songha.concert.reservation.ReservationRepository;
+import me.songha.concert.reservation.general.Reservation;
+import me.songha.concert.reservation.general.ReservationNotFoundException;
+import me.songha.concert.reservation.general.ReservationRepository;
 import me.songha.concert.seat.Seat;
 import me.songha.concert.seat.SeatNotFoundException;
 import org.springframework.stereotype.Service;

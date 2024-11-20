@@ -1,4 +1,4 @@
-package me.songha.concert.reservation;
+package me.songha.concert.reservation.general;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -42,12 +42,6 @@ public class ReservationController {
     public ResponseEntity<Void> createReservation(@RequestBody ReservationDto reservationDto) {
         reservationRepositoryService.createReservation(reservationDto);
         return ResponseEntity.status(201).build();
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> updateReservation(@PathVariable Long id, @RequestBody ReservationDto reservationDto) {
-        reservationRepositoryService.updateReservation(id, reservationDto);
-        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")

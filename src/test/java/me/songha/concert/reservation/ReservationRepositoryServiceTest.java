@@ -3,8 +3,9 @@ package me.songha.concert.reservation;
 import me.songha.concert.concert.Concert;
 import me.songha.concert.concert.ConcertNotFoundException;
 import me.songha.concert.concert.ConcertRepository;
-import me.songha.concert.reservationseat.ReservationSeat;
-import me.songha.concert.reservationseat.ReservationSeatRepository;
+import me.songha.concert.reservation.general.*;
+import me.songha.concert.reservation.seat.ReservationSeat;
+import me.songha.concert.reservation.seat.ReservationSeatRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-class ReservationServiceTest {
+class ReservationRepositoryServiceTest {
 
     @Mock
     private ReservationRepository reservationRepository;
@@ -34,7 +35,7 @@ class ReservationServiceTest {
     private ReservationSeatRepository reservationSeatRepository;
 
     @InjectMocks
-    private ReservationService reservationService;
+    private ReservationRepositoryService reservationRepositoryService;
 
     @BeforeEach
     void setUp() {
@@ -50,7 +51,7 @@ class ReservationServiceTest {
         when(reservationRepository.findById(reservationId)).thenReturn(Optional.of(reservation));
         when(reservationConverter.toDto(reservation)).thenReturn(reservationDto);
 
-        ReservationDto result = reservationService.getReservation(reservationId);
+        ReservationDto result = reservationRepositoryService.getReservation(reservationId);
 
         assertNotNull(result);
         verify(reservationRepository, times(1)).findById(reservationId);
@@ -64,7 +65,7 @@ class ReservationServiceTest {
 
         when(reservationRepository.findById(reservationId)).thenReturn(Optional.empty());
 
-        assertThrows(ReservationNotFoundException.class, () -> reservationService.getReservation(reservationId));
+        assertThrows(ReservationNotFoundException.class, () -> reservationRepositoryService.getReservation(reservationId));
         verify(reservationRepository, times(1)).findById(reservationId);
     }
 
@@ -80,7 +81,7 @@ class ReservationServiceTest {
         when(reservationSeatRepository.findByReservation(reservationDto.getId())).thenReturn(reservationSeats);
         when(reservationConverter.toEntity(reservationDto, concert, reservationSeats)).thenReturn(reservation);
 
-        reservationService.createReservation(reservationDto);
+        reservationRepositoryService.createReservation(reservationDto);
 
         verify(concertRepository, times(1)).findById(reservationDto.getConcertId());
         verify(reservationSeatRepository, times(1)).findByReservation(reservationDto.getId());
@@ -95,7 +96,7 @@ class ReservationServiceTest {
 
         when(concertRepository.findById(reservationDto.getConcertId())).thenReturn(Optional.empty());
 
-        assertThrows(ConcertNotFoundException.class, () -> reservationService.createReservation(reservationDto));
+        assertThrows(ConcertNotFoundException.class, () -> reservationRepositoryService.createReservation(reservationDto));
         verify(concertRepository, times(1)).findById(reservationDto.getConcertId());
         verifyNoInteractions(reservationSeatRepository);
         verifyNoInteractions(reservationRepository);
@@ -109,7 +110,7 @@ class ReservationServiceTest {
 
         when(reservationRepository.findById(reservationId)).thenReturn(Optional.of(reservation));
 
-        reservationService.deleteReservation(reservationId);
+        reservationRepositoryService.deleteReservation(reservationId);
 
         verify(reservationRepository, times(1)).findById(reservationId);
         verify(reservationRepository, times(1)).delete(reservation);
@@ -122,7 +123,7 @@ class ReservationServiceTest {
 
         when(reservationRepository.findById(reservationId)).thenReturn(Optional.empty());
 
-        assertThrows(ReservationNotFoundException.class, () -> reservationService.deleteReservation(reservationId));
+        assertThrows(ReservationNotFoundException.class, () -> reservationRepositoryService.deleteReservation(reservationId));
         verify(reservationRepository, times(1)).findById(reservationId);
         verify(reservationRepository, never()).delete(any());
     }

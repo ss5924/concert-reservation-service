@@ -1,8 +1,9 @@
 package me.songha.concert.reservationhistory;
 
-import me.songha.concert.reservation.Reservation;
-import me.songha.concert.reservation.ReservationNotFoundException;
-import me.songha.concert.reservation.ReservationRepository;
+import me.songha.concert.reservation.general.Reservation;
+import me.songha.concert.reservation.general.ReservationNotFoundException;
+import me.songha.concert.reservation.general.ReservationRepository;
+import me.songha.concert.reservation.history.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

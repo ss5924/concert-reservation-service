@@ -1,4 +1,4 @@
-package me.songha.concert.reservation;
+package me.songha.concert.reservation.general;
 
 public enum ReservationStatus {
     PENDING, PROCESSING, CONFIRMED, CANCELED, REJECTED;

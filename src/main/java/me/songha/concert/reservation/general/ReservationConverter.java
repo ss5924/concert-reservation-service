@@ -1,7 +1,7 @@
-package me.songha.concert.reservation;
+package me.songha.concert.reservation.general;
 
 import me.songha.concert.concert.Concert;
-import me.songha.concert.reservationseat.ReservationSeat;
+import me.songha.concert.reservation.seat.ReservationSeat;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

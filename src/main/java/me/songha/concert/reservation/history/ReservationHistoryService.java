@@ -1,9 +1,9 @@
-package me.songha.concert.reservationhistory;
+package me.songha.concert.reservation.history;
 
 import lombok.RequiredArgsConstructor;
-import me.songha.concert.reservation.Reservation;
-import me.songha.concert.reservation.ReservationNotFoundException;
-import me.songha.concert.reservation.ReservationRepository;
+import me.songha.concert.reservation.general.Reservation;
+import me.songha.concert.reservation.general.ReservationNotFoundException;
+import me.songha.concert.reservation.general.ReservationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

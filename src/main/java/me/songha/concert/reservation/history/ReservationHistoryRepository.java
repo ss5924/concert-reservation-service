@@ -1,4 +1,4 @@
-package me.songha.concert.reservationhistory;
+package me.songha.concert.reservation.history;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

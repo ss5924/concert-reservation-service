@@ -1,4 +1,4 @@
-package me.songha.concert.reservationseat;
+package me.songha.concert.reservation.seat;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -36,6 +36,11 @@ public class ReservationSeatPreoccupyService {
         return redisTemplate.keys(pattern);
     }
 
+    public String getUserIdByConcertAndSeatNumber(Long concertId, String seatNumber) {
+        String seatKey = String.format("concert:%d:seat:%s", concertId, seatNumber);
+        return redisTemplate.opsForValue().get(seatKey);
+    }
+
     public boolean isSeatAvailable(Long concertId, String seatNumber) {
         String seatKey = String.format("concert:%d:seat:%s", concertId, seatNumber);
         List<String> soldSeats = getSoldSeatsByConcert(concertId);
@@ -45,6 +50,15 @@ public class ReservationSeatPreoccupyService {
         boolean isReserved = preoccupiedSeats.contains(seatKey);
 
         return !(isSold || isReserved);
+    }
+
+    public void isValidatedSeatForCurrentUser(Long concertId, Long userId, List<String> seatNumbers) {
+        for (String seatNumber : seatNumbers) {
+            boolean isValidatedSeatForCurrentUser = String.valueOf(userId).equals(getUserIdByConcertAndSeatNumber(concertId, seatNumber));
+            if (!isValidatedSeatForCurrentUser) {
+                throw new IllegalArgumentException("isNotValidatedSeatForCurrentUser");
+            }
+        }
     }
 
 }

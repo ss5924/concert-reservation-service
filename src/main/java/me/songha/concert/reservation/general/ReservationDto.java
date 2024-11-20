@@ -1,4 +1,4 @@
-package me.songha.concert.reservation;
+package me.songha.concert.reservation.general;
 
 import lombok.Builder;
 import lombok.Data;

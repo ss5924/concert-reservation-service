@@ -1,9 +1,9 @@
-package me.songha.concert.reservationseat;
+package me.songha.concert.reservation.seat;
 
 import jakarta.persistence.*;
 import lombok.*;
 import me.songha.concert.common.BaseTimeEntity;
-import me.songha.concert.reservation.Reservation;
+import me.songha.concert.reservation.general.Reservation;
 import me.songha.concert.seat.Seat;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

@@ -1,7 +1,7 @@
-package me.songha.concert.reservationhistory;
+package me.songha.concert.reservation.history;
 
-import me.songha.concert.reservation.Reservation;
-import me.songha.concert.reservation.ReservationStatus;
+import me.songha.concert.reservation.general.Reservation;
+import me.songha.concert.reservation.general.ReservationStatus;
 import org.springframework.stereotype.Component;
 
 @Component

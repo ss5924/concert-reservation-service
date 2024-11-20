@@ -1,4 +1,4 @@
-package me.songha.concert.reservation;
+package me.songha.concert.reservation.general;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

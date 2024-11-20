@@ -1,4 +1,4 @@
-package me.songha.concert.reservationseat;
+package me.songha.concert.reservation.seat;
 
 import me.songha.concert.common.NotFoundException;
 

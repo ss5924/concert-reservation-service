@@ -1,4 +1,4 @@
-package me.songha.concert.reservationhistory;
+package me.songha.concert.reservation.history;
 
 import lombok.Builder;
 import lombok.Data;
