@@ -9,10 +9,12 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class ReservationPendingProducer {
-    private final KafkaTemplate<String, ReservationPendingRequest> kafkaTemplate;
+    private final KafkaTemplate<String, ReservationPendingProducerRequest> kafkaTemplate;
     private static final String TOPIC_NAME = "reservation-topic";
 
-    public void sendToQueue(String requestId, ReservationPendingRequest request) {
+    public void sendToQueue(String requestId, Long userId, Long concertId) {
+        ReservationPendingProducerRequest request =
+                new ReservationPendingProducerRequest(concertId, userId, requestId);
         kafkaTemplate.send(TOPIC_NAME, requestId, request);
         log.info("Sent reservation to Kafka. Request ID: {}", requestId);
     }

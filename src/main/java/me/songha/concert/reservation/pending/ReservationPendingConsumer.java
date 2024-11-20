@@ -21,7 +21,7 @@ public class ReservationPendingConsumer {
     private final StringRedisTemplate redisTemplate;
 
     @KafkaListener(topics = "reservation-topic", groupId = "reservation-group")
-    public void processReservation(ReservationPendingRequest request, Acknowledgment acknowledgment) {
+    public void processReservation(ReservationPendingProducerRequest request, Acknowledgment acknowledgment) {
         try {
             reservationRequestStatusService.saveStatus(request.getRequestId(), ReservationStatus.PROCESSING.toString());
 

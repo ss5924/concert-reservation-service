@@ -1,8 +1,8 @@
 package me.songha.concert.reservation.pending;
 
 import lombok.RequiredArgsConstructor;
-import me.songha.concert.reservation.general.ReservationStatus;
 import me.songha.concert.common.CurrentUser;
+import me.songha.concert.reservation.general.ReservationStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,15 +14,17 @@ public class ReservationPendingController {
     private final ReservationRequestStatusService reservationRequestStatusService;
 
     @PostMapping
-    public ResponseEntity<String> pendingReservation(@CurrentUser Long userId, @RequestBody ReservationPendingRequest request) {
-        String requestId = userId + "-" + System.currentTimeMillis();
-        request.setUserId(userId);
-        request.setRequestId(requestId);
+    public ResponseEntity<ReservationPendingResponse> pendingReservation(@CurrentUser Long userId, @RequestBody ReservationPendingRequest request) {
+        String requestId = "RES" + userId + "-" + System.currentTimeMillis();
 
         reservationRequestStatusService.saveStatus(requestId, ReservationStatus.PENDING.toString());
-        reservationPendingProducer.sendToQueue(requestId, request);
+        reservationPendingProducer.sendToQueue(requestId, userId, request.getConcertId());
 
-        return ResponseEntity.ok("Reservation request added to the queue. Request ID: " + requestId);
+        ReservationPendingResponse response = new ReservationPendingResponse(
+                requestId,
+                "Reservation request added to the queue.");
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/request-id/{requestId}/details")

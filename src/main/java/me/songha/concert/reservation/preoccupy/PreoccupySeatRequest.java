@@ -7,6 +7,5 @@ import java.util.List;
 @Data
 public class PreoccupySeatRequest {
     private Long concertId;
-    private Long userId;
     private List<String> seatNumbers;
 }
