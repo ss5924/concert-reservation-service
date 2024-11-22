@@ -8,16 +8,16 @@
 
 ### 2. 개발 기간
 
-- 1차 기간: 2024-11.14 ~ 2024-11-21
+- 1차 기간: 2024-11-14 ~ 2024-11-21
 
 ### 3. 기술 스택
 
-- Java 21, Spring Boot 3.3
-- Redis, MariaDB
-- Kafka
-- JPA, Hibernate
-- Maven
-- JUnit 5, Mockito
+- backend: Java 21, Spring Boot 3.3
+- db: Redis, MariaDB
+- messaging: Kafka
+- ORM: JPA, Hibernate
+- build: Maven
+- test: JUnit 5, Mockito
 
 ### 4. ERD
 
@@ -25,27 +25,44 @@
 
 ## 나. 기능 설명
 
-#### **주요 API 요약**
+### **주요 구현 내용**
 
-| Method   | Endpoint                                              | 설명                |
-|----------|-------------------------------------------------------|-------------------|
-| `POST`   | `/reservation/pending`                                | 예약 진입             |
-| `GET`    | `/reservation/pending/request-id/{requestId}/details` | 예약 진입 상태 및 결과 조회  |
-| `POST`   | `/reservation/preoccupy`                              | 좌석 선점             |
-| `PATCH`  | `/reservation/progress`                               | 예약 확정             |
-| `GET`    | `/reservation/id/{id}`                                | id로 예약 조회         |
-| `GET`    | `/reservation/my`                                     | 로그인 된 유저의 예약 조회   |
-| `GET`    | `/api/concert/all`                                    | 모든 공연 조회          |
-| `GET`    | `/api/concert/id/{id}`                                | id로 공연 조회         |
-| `POST`   | `/api/concert`                                        | 공연 생성             |
-| `PUT`    | `/api/concert/id/{id}`                                | 공연 정보 수정          |
-| `DELETE` | `/api/concert/id/{id}`                                | 공연 삭제             |
-| `GET`    | `/api/venue/all`                                      | 모든 공연장 조회         |
-| `GET`    | `/api/venue/venue-name/{name}`                        | 이름으로 공연장 조회       |
-| `GET`    | `/api/venue/id/{id}`                                  | id로 공연장 조회        |
-| `POST`   | `/api/venue`                                          | 공연장 생성            |
-| `PUT`    | `/api/venue/id/{id}`                                  | 공연장 정보 수정         |
-| `DELETE` | `/api/venue/id/{id}`                                  | 공연장 삭제            |
+#### 1. JWT 인증
+- OncePerRequestFilter를 활용해 JWT 인증 시스템 설계
+- HandlerMethodArgumentResolver와 결합하여 사용자 정보를 Controller에서 유연하게 활용할 수 있는 구조 구축
+
+#### 2. 대기열 처리
+- 대기 상태(pending)는 Kafka로 트래픽 분산 처리
+- polling으로 상태 확인 유도
+
+#### 3. 좌석 선점
+- Redis를 사용하여 좌석 선점 시 유일성 보장
+
+#### 4. 에러 처리
+- 예외는 @ExceptionHandler를 통해 일괄적으로 처리, 가독성 및 유지보수성 강화
+
+### **주요 API 요약**
+
+| Method   | Endpoint                                              | 설명                           |
+|----------|-------------------------------------------------------|------------------------------|
+| `POST`   | `/reservation/pending`                                | 예약 진입                        |
+| `GET`    | `/reservation/pending/request-id/{requestId}/details` | 예약 진입 상태 및 결과 조회             |
+| `POST`   | `/reservation/preoccupy`                              | 좌석 선점                        |
+| `PATCH`  | `/reservation/progress`                               | 예약 확정                        |
+| `GET`    | `/reservation/id/{id}`                                | id로 예약 조회                    |
+| `GET`    | `/reservation/my`                                     | 로그인 된 유저의 예약 조회              |
+| `GET`    | `/reservation/my/concert-id/{concertId}`              | 로그인 된 유저의 특정 concert 예약 조회   |
+| `GET`    | `/api/concert/all`                                    | 모든 공연 조회                     |
+| `GET`    | `/api/concert/id/{id}`                                | id로 공연 조회                    |
+| `POST`   | `/api/concert`                                        | 공연 생성                        |
+| `PUT`    | `/api/concert/id/{id}`                                | 공연 정보 수정                     |
+| `DELETE` | `/api/concert/id/{id}`                                | 공연 삭제                        |
+| `GET`    | `/api/venue/all`                                      | 모든 공연장 조회                    |
+| `GET`    | `/api/venue/venue-name/{name}`                        | 이름으로 공연장 조회                  |
+| `GET`    | `/api/venue/id/{id}`                                  | id로 공연장 조회                   |
+| `POST`   | `/api/venue`                                          | 공연장 생성                       |
+| `PUT`    | `/api/venue/id/{id}`                                  | 공연장 정보 수정                    |
+| `DELETE` | `/api/venue/id/{id}`                                  | 공연장 삭제                       |
 
 ---
 
@@ -64,22 +81,22 @@ curl -X POST http://localhost:8080/api/reservation/pending \
 
 ```bash
 Responese: {
-    "requestId": "321-1732101253406",
-    "message": "Reservation request added to the queue. Request"
+    "requestId": "RES321-1732101253406",
+    "message": "Reservation request added to the queue."
 }
 ```
 
 #### 2. 예매 신청 진입 상태값 반환 요청
 
 ```bash
-curl -X GET http://localhost:8080/reservation/pending/request-id/321-1732101253406/details \
+curl -X GET http://localhost:8080/reservation/pending/request-id/RES321-1732101253406/details \
 -H "Content-Type: application/json" \
 -H "Authorization: Bearer <jwt-token>"
 ```
 
 ```bash
 Responese: {
-    "requestId": "321-1732101253406",
+    "requestId": "RES321-1732101253406",
     "status": "PROCESSING",
     "reservationId": "86"
 }
